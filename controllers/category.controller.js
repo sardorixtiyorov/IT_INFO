@@ -1,9 +1,13 @@
 const errorHandler = require("../helpers/error_handler");
 const Category = require("../models/Category");
 const { default: mongoose } = require("mongoose");
+const { categoryValidation } = require("../validations/category");
 
 const createCategory = async (req, res) => {
   try {
+    const { error } = categoryValidation(req.body);
+    if (error) return errorHandler(res, error.details[0].message);
+
     const { category_name, parent_category_id } = req.body;
     const category = await Category.findOne({
       category_name: { $regex: category_name, $options: "i" },
