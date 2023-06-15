@@ -4,6 +4,7 @@ const { default: mongoose } = require("mongoose");
 
 const createDesc = async (req, res) => {
   try {
+    
     const { description, category_id } = req.body;
     // const desc = await Description.findOne({
     //   description: { $regex: term, $options: "i" },

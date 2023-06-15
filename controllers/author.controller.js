@@ -114,6 +114,9 @@ const getAuthorByName = async (req, res) => {
 };
 const updateAuthor = async (req, res) => {
   try {
+    const { error } = authorValidation(req.body);
+    if (error) return errorHandler(res, error.details[0].message);
+    
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).send({
         message: "Invalid  id",

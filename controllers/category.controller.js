@@ -77,6 +77,11 @@ const getCategoryByName = async (req, res) => {
 };
 const updateCategory = async (req, res) => {
   try {
+
+    const { error } = categoryValidation(req.body);
+    if (error) return errorHandler(res, error.details[0].message);
+
+
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).send({
         message: "Invalid  id",

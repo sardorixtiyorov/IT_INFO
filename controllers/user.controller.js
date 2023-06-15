@@ -90,6 +90,9 @@ const getUserByName = async (req, res) => {
 };
 const updateUser = async (req, res) => {
   try {
+    const { error } = userValidation(req.body);
+    if (error) return errorHandler(res, error.details[0].message);
+    
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).send({
         message: "Invalid  id",

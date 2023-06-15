@@ -88,6 +88,9 @@ const getAdminByName = async (req, res) => {
 };
 const updateAdmin = async (req, res) => {
   try {
+    const { error } = adminValidation(req.body);
+    if (error) return errorHandler(res, error.details[0].message);
+    
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).send({
         message: "Invalid  id",
