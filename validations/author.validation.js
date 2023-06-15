@@ -21,6 +21,17 @@ exports.authorValidation = (data) => {
     author_position: Joi.string(),
     author_photo: Joi.string().default("/author/avatar.jpg"),
     is_expert: Joi.boolean().default(false),
+    gender: Joi.string().valid("male", "female"),
+    birth_date: Joi.date().less(new Date("2005-01-01")),
+    birth_year: Joi.number().integer().min(1980).max(2005),
+    referred: Joi.boolean().required(),
+    referralDetails: Joi.string().when("referred", {
+      is: true,
+      then: Joi.string().min(3).required(),
+      otherwise: Joi.optional,
+    }),
+    coding_lang: Joi.array().items(Joi.string(), Joi.object()),
+    is_active: Joi.boolean().truthy("Yes").valid(true),
   });
   return schema.validate(data, { abortEarly: false });
 };

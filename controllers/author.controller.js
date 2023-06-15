@@ -2,6 +2,7 @@ const errorHandler = require("../helpers/error_handler");
 const { default: mongoose } = require("mongoose");
 const Author = require("../models/Author");
 const { authorValidation } = require("../validations/author.validation");
+const bcrypt = require("bcrypt");
 
 const createAuthor = async (req, res) => {
   try {
@@ -25,13 +26,14 @@ const createAuthor = async (req, res) => {
     if (author) {
       return res.status(400).json({ message: "Author already exists" });
     }
+    const hashedPassword = await bcrypt.hash(author_password, 7);
     const newAuthor = new Author({
       author_first_name,
       author_last_name,
       author_nick_name,
       author_email,
       author_phone,
-      author_password,
+      author_password: hashedPassword,
       author_info,
       author_position,
       author_photo,
@@ -40,6 +42,23 @@ const createAuthor = async (req, res) => {
     newAuthor.save();
 
     res.status(201).json({ message: "Author added successfully" });
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+const loginAuthor = async (req, res) => {
+  try {
+    const { author_email, author_password } = req.body;
+    const author = await Author.findOne({ author_email });
+    if (!author)
+      return res.status(400).send({ message: "Email or password incorrect" });
+    const validPassword = await bcrypt.compare(
+      author_password, //frotdan kelgan ochiq password
+      author.author_password //bazadan olingan heshlangan password
+    );
+    if (!validPassword)
+      return res.status(400).send({ message: "Email or password incorrect" });
+    res.status(200).send({ message: "Welcome to system" });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -163,4 +182,5 @@ module.exports = {
   updateAuthor,
   deleteAuthor,
   getAuthorByName,
+  loginAuthor,
 };

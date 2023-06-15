@@ -6,11 +6,10 @@ const adminSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
     admin_email: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
+      type: String,
+      unique: true,
     },
     admin_password: {
       type: String,
@@ -21,17 +20,10 @@ const adminSchema = new Schema(
     admin_is_creator: {
       type: Boolean,
     },
-    created_date: {
-      type: Date,
-      default: Date.now,
-    },
-    updated_date: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     versionKey: false,
+    timestamps: true,
   }
 );
 
