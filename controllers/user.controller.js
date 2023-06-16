@@ -4,6 +4,17 @@ const { default: mongoose } = require("mongoose");
 const { userValidation } = require("../validations/user.validation");
 const bcrypt = require("bcrypt");
 
+const jwt = require("jsonwebtoken");
+const config = require("config");
+
+const generateAccessToken = (id, userRoles) => {
+  const payload = {
+    id,
+    adminRoles,
+  };
+  return jwt.sign(payload, config.get("secret"), { expiresIn: "1h" });
+};
+
 const createUser = async (req, res) => {
   try {
     const { error } = userValidation(req.body);
@@ -88,11 +99,37 @@ const getUserByName = async (req, res) => {
     errorHandler(res, error);
   }
 };
+const loginUser = async (req, res) => {
+  try {
+    const { user_email, user_password } = req.body;
+    const user = await User.findOne({ user_email });
+    if (!user)
+      return res.status(400).send({ message: "Email or password incorrect" });
+
+    const validPassword = await bcrypt.compare(
+      user_password,
+      user.user_password
+    );
+    if (!validPassword)
+      return res.status(400).send({ message: "Email or password incorrect" });
+
+    const token = generateAccessToken(user.id, [
+      "READ",
+      "WRITE",
+      "CHANGE",
+    ]);
+
+    res.status(200).send({ token: token });
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
 const updateUser = async (req, res) => {
   try {
     const { error } = userValidation(req.body);
     if (error) return errorHandler(res, error.details[0].message);
-    
+
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).send({
         message: "Invalid  id",
@@ -150,4 +187,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserByName,
+  loginUser
 };

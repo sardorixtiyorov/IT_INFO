@@ -57,8 +57,8 @@ const loginAdmin = async (req, res) => {
       return res.status(400).send({ message: "Email or password incorrect" });
 
     const validPassword = await bcrypt.compare(
-      admin_password, //frontdan kelgan ochiq password
-      admin.admin_password //bazadan olingan heshlangan password
+      admin_password,
+      admin.admin_password
     );
     if (!validPassword)
       return res.status(400).send({ message: "Email or password incorrect" });
@@ -66,6 +66,7 @@ const loginAdmin = async (req, res) => {
     const token = generateAccessToken(admin.id, admin.is_creator, [
       "READ",
       "WRITE",
+      "CHANGE",
     ]);
 
     res.status(200).send({ token: token });
