@@ -2,7 +2,18 @@ const errorHandler = require("../helpers/error_handler");
 const { default: mongoose } = require("mongoose");
 const Author = require("../models/Author");
 const { authorValidation } = require("../validations/author.validation");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const config = require("config");
+
+const generateAccessToken = (id, is_expert, authorRoles) => {
+  const payload = {
+    id,
+    is_expert,
+    authorRoles,
+  };
+  return jwt.sign(payload, config.get("secret"), { expiresIn: "1h" });
+};
 
 const createAuthor = async (req, res) => {
   try {
@@ -27,6 +38,7 @@ const createAuthor = async (req, res) => {
       return res.status(400).json({ message: "Author already exists" });
     }
     const hashedPassword = await bcrypt.hash(author_password, 7);
+
     const newAuthor = new Author({
       author_first_name,
       author_last_name,
@@ -53,12 +65,18 @@ const loginAuthor = async (req, res) => {
     if (!author)
       return res.status(400).send({ message: "Email or password incorrect" });
     const validPassword = await bcrypt.compare(
-      author_password, //frotdan kelgan ochiq password
+      author_password, //frontdan kelgan ochiq password
       author.author_password //bazadan olingan heshlangan password
     );
     if (!validPassword)
       return res.status(400).send({ message: "Email or password incorrect" });
-    res.status(200).send({ message: "Welcome to system" });
+
+    const token = generateAccessToken(author.id, author.is_expert, [
+      "READ",
+      "WRITE",
+    ]);
+
+    res.status(200).send({ token: token });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -116,7 +134,7 @@ const updateAuthor = async (req, res) => {
   try {
     const { error } = authorValidation(req.body);
     if (error) return errorHandler(res, error.details[0].message);
-    
+
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).send({
         message: "Invalid  id",

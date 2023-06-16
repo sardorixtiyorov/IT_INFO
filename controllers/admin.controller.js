@@ -4,6 +4,18 @@ const { default: mongoose } = require("mongoose");
 const { adminValidation } = require("../validations/admin.validation");
 const bcrypt = require("bcrypt");
 
+const jwt = require("jsonwebtoken");
+const config = require("config");
+
+const generateAccessToken = (id, is_creator, adminRoles) => {
+  const payload = {
+    id,
+    is_creator,
+    adminRoles,
+  };
+  return jwt.sign(payload, config.get("secret"), { expiresIn: "1h" });
+};
+
 const createAdmin = async (req, res) => {
   try {
     const { error } = adminValidation(req.body);
@@ -33,6 +45,30 @@ const createAdmin = async (req, res) => {
     newAdmin.save();
 
     res.status(201).json({ message: "Admin added successfully" });
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+const loginAdmin = async (req, res) => {
+  try {
+    const { admin_email, admin_password } = req.body;
+    const admin = await Admin.findOne({ admin_email });
+    if (!admin)
+      return res.status(400).send({ message: "Email or password incorrect" });
+
+    const validPassword = await bcrypt.compare(
+      admin_password, //frontdan kelgan ochiq password
+      admin.admin_password //bazadan olingan heshlangan password
+    );
+    if (!validPassword)
+      return res.status(400).send({ message: "Email or password incorrect" });
+
+    const token = generateAccessToken(admin.id, admin.is_creator, [
+      "READ",
+      "WRITE",
+    ]);
+
+    res.status(200).send({ token: token });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -90,7 +126,7 @@ const updateAdmin = async (req, res) => {
   try {
     const { error } = adminValidation(req.body);
     if (error) return errorHandler(res, error.details[0].message);
-    
+
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).send({
         message: "Invalid  id",
@@ -146,4 +182,5 @@ module.exports = {
   updateAdmin,
   deleteAdmin,
   getAdminByName,
+  loginAdmin,
 };

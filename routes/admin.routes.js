@@ -7,10 +7,11 @@ const {
   deleteAdmin,
   getAdminByName,
 } = require("../controllers/admin.controller");
+const Police = require("../middleware/Police");
 
 const router = Router();
 
-router.get("/", getAdmins);
+router.get("/", Police, getAdmins);
 router.post("/", createAdmin);
 router.get("/:id", getAdminById);
 router.put("/:id", updateAdmin);

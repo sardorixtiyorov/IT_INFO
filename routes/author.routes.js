@@ -8,12 +8,18 @@ const {
   getAuthorByName,
   loginAuthor,
 } = require("../controllers/author.controller");
+const Police = require("../middleware/Police");
+const authorRolesPolice = require("../middleware/authorRolesPolice");
 
 const router = Router();
 
-router.get("/", getAuthors);
+router.get("/", Police, getAuthors);
 router.post("/", createAuthor);
-router.get("/:id", getAuthorById);
+router.get(
+  "/:id",
+  authorRolesPolice(["READ", "WRITE", "CHANGE", "DELETE"]),
+  getAuthorById
+);
 router.put("/:id", updateAuthor);
 router.delete("/:id", deleteAuthor);
 router.get("/name/:name", getAuthorByName);
