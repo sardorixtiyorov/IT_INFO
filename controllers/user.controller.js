@@ -2,18 +2,10 @@ const errorHandler = require("../helpers/error_handler");
 const User = require("../models/User");
 const { default: mongoose } = require("mongoose");
 const { userValidation } = require("../validations/user.validation");
+
 const bcrypt = require("bcrypt");
-
-const jwt = require("jsonwebtoken");
 const config = require("config");
-
-const generateAccessToken = (id, userRoles) => {
-  const payload = {
-    id,
-    adminRoles,
-  };
-  return jwt.sign(payload, config.get("secret"), { expiresIn: "1h" });
-};
+const myJwt = require("../services/JwtService");
 
 const createUser = async (req, res) => {
   try {
@@ -102,27 +94,48 @@ const getUserByName = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { user_email, user_password } = req.body;
-    const user = await User.findOne({ user_email });
+    const user = await Admin.findOne({ user_email });
     if (!user)
       return res.status(400).send({ message: "Email or password incorrect" });
-
     const validPassword = await bcrypt.compare(
       user_password,
       user.user_password
     );
     if (!validPassword)
       return res.status(400).send({ message: "Email or password incorrect" });
+    const payload = {
+      id: user._id,
+      is_creator: user.is_creator,
+      userRoles: ["WRITE"],
+    };
+    const tokens = myJwt.generateTokens(payload);
+    console.log(tokens);
+    user.user_token = tokens.refreshToken;
+    await user.save();
 
-    const token = generateAccessToken(user.id, [
-      "READ",
-      "WRITE",
-      "CHANGE",
-    ]);
-
-    res.status(200).send({ token: token });
+    res.cookie("refreshToken", tokens.refreshToken, {
+      maxAge: config.get("refresh_ms"),
+      httpOnly: true,
+    });
+    res.status(200).send({ ...tokens });
   } catch (error) {
     errorHandler(res, error);
   }
+};
+const logoutUser = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  let user;
+  if (!refreshToken) {
+    return res.status(400).send({ message: "No token found" });
+  }
+  user = await Admin.findOneAndUpdate(
+    { user_token: refreshToken },
+    { user_token: "" },
+    { new: true }
+  );
+  if (!user) return res.status(400).send({ message: "No token found" });
+  res.clearCookie("refreshToken");
+  res.status(200).send({ user });
 };
 
 const updateUser = async (req, res) => {
@@ -187,5 +200,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserByName,
-  loginUser
+  loginUser,
+  logoutUser,
 };

@@ -42,6 +42,9 @@ const authorSchema = new Schema(
     is_expert: {
       type: Boolean,
     },
+    author_token: {
+      type: String,
+    },
   },
   {
     versionKey: false,

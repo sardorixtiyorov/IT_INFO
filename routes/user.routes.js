@@ -7,6 +7,7 @@ const {
   deleteUser,
   getUserByName,
   loginUser,
+  logoutUser,
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -18,5 +19,6 @@ router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.get("/name/:name", getUserByName);
 router.post("/login", loginUser);
+router.post("/logout", logoutUser);
 
 module.exports = router;

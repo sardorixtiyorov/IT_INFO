@@ -2,19 +2,10 @@ const errorHandler = require("../helpers/error_handler");
 const Admin = require("../models/Admin");
 const { default: mongoose } = require("mongoose");
 const { adminValidation } = require("../validations/admin.validation");
+
 const bcrypt = require("bcrypt");
-
-const jwt = require("jsonwebtoken");
 const config = require("config");
-
-const generateAccessToken = (id, is_creator, adminRoles) => {
-  const payload = {
-    id,
-    is_creator,
-    adminRoles,
-  };
-  return jwt.sign(payload, config.get("secret"), { expiresIn: "1h" });
-};
+const myJwt = require("../services/JwtService");
 
 const createAdmin = async (req, res) => {
   try {
@@ -55,24 +46,45 @@ const loginAdmin = async (req, res) => {
     const admin = await Admin.findOne({ admin_email });
     if (!admin)
       return res.status(400).send({ message: "Email or password incorrect" });
-
     const validPassword = await bcrypt.compare(
       admin_password,
       admin.admin_password
     );
     if (!validPassword)
       return res.status(400).send({ message: "Email or password incorrect" });
+    const payload = {
+      id: admin._id,
+      is_creator: admin.is_creator,
+      adminRoles: ["READ", "WRITE", "CHANGE"],
+    };
+    const tokens = myJwt.generateTokens(payload);
+    console.log(tokens);
+    admin.admin_token = tokens.refreshToken;
+    await admin.save();
 
-    const token = generateAccessToken(admin.id, admin.is_creator, [
-      "READ",
-      "WRITE",
-      "CHANGE",
-    ]);
-
-    res.status(200).send({ token: token });
+    res.cookie("refreshToken", tokens.refreshToken, {
+      maxAge: config.get("refresh_ms"),
+      httpOnly: true,
+    });
+    res.status(200).send({ ...tokens });
   } catch (error) {
     errorHandler(res, error);
   }
+};
+const logoutAdmin = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  let admin;
+  if (!refreshToken) {
+    return res.status(400).send({ message: "No token found" });
+  }
+  admin = await Admin.findOneAndUpdate(
+    { admin_token: refreshToken },
+    { admin_token: "" },
+    { new: true }
+  );
+  if (!admin) return res.status(400).send({ message: "No token found" });
+  res.clearCookie("refreshToken");
+  res.status(200).send({ admin });
 };
 
 const getAdmins = async (req, res) => {
@@ -184,4 +196,5 @@ module.exports = {
   deleteAdmin,
   getAdminByName,
   loginAdmin,
+  logoutAdmin,
 };
