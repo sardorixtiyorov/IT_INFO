@@ -105,7 +105,6 @@ const loginUser = async (req, res) => {
       return res.status(400).send({ message: "Email or password incorrect" });
     const payload = {
       id: user._id,
-      is_creator: user.is_creator,
       userRoles: ["WRITE"],
     };
     const tokens = myJwt.generateTokens(payload);
@@ -136,6 +135,32 @@ const logoutUser = async (req, res) => {
   if (!user) return res.status(400).send({ message: "No token found" });
   res.clearCookie("refreshToken");
   res.status(200).send({ user });
+};
+const refreshUserToken = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) return res.status(400).send({ message: "No token found" });
+
+  const userDataFromCookie = await myJwt.verifyRefresh(refreshToken);
+
+  const authoDataFromDB = await User.findOne({ user_token: refreshToken });
+
+  if (!authoDataFromDB || !userDataFromCookie) {
+    return res.status(400).send({ message: "User is not registered" });
+  }
+  const user = await User.findById(userDataFromCookie.id);
+  if (!user) return res.status(400).send({ message: "Invalid Id" });
+  const payload = {
+    id: user._id,
+    userRoles: ["READ"],
+  };
+  const tokens = myJwt.generateTokens(payload);
+  user.user_token = tokens.refreshToken;
+  await user.save();
+  res.cookie("refreshToken", tokens.refreshToken, {
+    maxAge: config.get("refresh_ms"),
+    httpOnly: true,
+  });
+  res.status(200).send({ ...tokens });
 };
 
 const updateUser = async (req, res) => {
@@ -202,4 +227,5 @@ module.exports = {
   getUserByName,
   loginUser,
   logoutUser,
+  refreshUserToken
 };

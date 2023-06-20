@@ -4,7 +4,7 @@
   "secret": "MyVeryVerySecretKey",
   "access_key": "BuAccessUchunMahfiyKalit",
   "refresh_key": "BuRefreshUchunMahfiyKalit",
-  "access_time": "15m",
+  "access_time": "30s",
   "refresh_time": "30d",
   "refresh_ms": 2592000000
 }

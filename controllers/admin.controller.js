@@ -87,6 +87,34 @@ const logoutAdmin = async (req, res) => {
   res.status(200).send({ admin });
 };
 
+const refreshAdminToken = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) return res.status(400).send({ message: "No token found" });
+
+  const adminDataFromCookie = await myJwt.verifyRefresh(refreshToken);
+
+  const authoDataFromDB = await Admin.findOne({ admin_token: refreshToken });
+
+  if (!authoDataFromDB || !adminDataFromCookie) {
+    return res.status(400).send({ message: "Admin is not registered" });
+  }
+  const admin = await Admin.findById(adminDataFromCookie.id);
+  if (!admin) return res.status(400).send({ message: "Invalid Id" });
+  const payload = {
+    id: admin._id,
+    is_creator: admin.is_creator,
+    adminRoles: ["READ", "WRITE", "CHANGE"],
+  };
+  const tokens = myJwt.generateTokens(payload);
+  admin.admin_token = tokens.refreshToken;
+  await admin.save();
+  res.cookie("refreshToken", tokens.refreshToken, {
+    maxAge: config.get("refresh_ms"),
+    httpOnly: true,
+  });
+  res.status(200).send({ ...tokens });
+};
+
 const getAdmins = async (req, res) => {
   try {
     const admins = await Admin.find();
@@ -197,4 +225,5 @@ module.exports = {
   getAdminByName,
   loginAdmin,
   logoutAdmin,
+  refreshAdminToken,
 };

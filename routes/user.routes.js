@@ -10,15 +10,17 @@ const {
   logoutUser,
 } = require("../controllers/user.controller");
 
+const Validator = require("../middleware/validator");
+
 const router = Router();
 
 router.get("/", getUsers);
-router.post("/", createUser);
+router.post("/", Validator("user"), createUser);
 router.get("/:id", getUserById);
-router.put("/:id", updateUser);
+router.put("/:id", Validator("user"), updateUser);
 router.delete("/:id", deleteUser);
 router.get("/name/:name", getUserByName);
-router.post("/login", loginUser);
+router.post("/login", Validator("user_email_pass"), loginUser);
 router.post("/logout", logoutUser);
 
 module.exports = router;

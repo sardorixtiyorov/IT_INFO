@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const router = Router();
+const express = require("express");
 
 const dictRouter = require("./dictionary.routes");
 const categoryRouter = require("./category.routes");
@@ -9,12 +9,23 @@ const authorRouter = require("./author.routes");
 const adminRouter = require("./admin.routes");
 const userRouter = require("./user.routes");
 
-router.use("/api/dictionary", dictRouter);
-router.use("/api/category", categoryRouter);
-router.use("/api/description", descRouter);
-router.use("/api/synonym", synonymRouter);
-router.use("/api/author", authorRouter);
-router.use("/api/admin", adminRouter);
-router.use("/api/user", userRouter);
+express.Router.prefix = function (path, subRouter) {
+  const router = express.Router();
+  this.use(path, router);
+  subRouter(router);
+  return router;
+};
+
+const router = Router();
+
+router.prefix("/api", (ApiRouter) => {
+  ApiRouter.use("/dictionary", dictRouter);
+  ApiRouter.use("/category", categoryRouter);
+  ApiRouter.use("/description", descRouter);
+  ApiRouter.use("/synonym", synonymRouter);
+  ApiRouter.use("/author", authorRouter);
+  ApiRouter.use("/admin", adminRouter);
+  ApiRouter.use("/user", userRouter);
+});
 
 module.exports = router;
