@@ -21,9 +21,12 @@ const userSchema = new Schema(
       type: String,
       default: "../avatar.jpg",
     },
-
+    user_activation_link: {
+      type: String,
+    },
     user_is_active: {
       type: Boolean,
+      default: false,
     },
   },
   {

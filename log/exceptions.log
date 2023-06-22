@@ -1,0 +1,97 @@
+2023-06-22T05:06:25.512Z  error: uncaughtException: fa is not defined
+ReferenceError: fa is not defined
+    at Object.<anonymous> (/home/user/BOOTCAMP/DataBase/MONGO/it_info/services/logger.js:19:20)
+    at Module._compile (node:internal/modules/cjs/loader:1275:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1329:10)
+    at Module.load (node:internal/modules/cjs/loader:1133:32)
+    at Module._load (node:internal/modules/cjs/loader:972:12)
+    at Module.require (node:internal/modules/cjs/loader:1157:19)
+    at require (node:internal/modules/helpers:119:18)
+    at Object.<anonymous> (/home/user/BOOTCAMP/DataBase/MONGO/it_info/app.js:8:16)
+    at Module._compile (node:internal/modules/cjs/loader:1275:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1329:10)
+2023-06-22T05:07:45.225Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:07:45.225Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:07:46.222Z  error: uncaughtException: Hello
+Error: Hello
+    at Timeout._onTimeout (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:135:21)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+2023-06-22T05:09:32.526Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:09:32.526Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:09:33.525Z  error: uncaughtException: Hello
+Error: Hello
+    at Timeout._onTimeout (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:135:21)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+2023-06-22T05:11:01.879Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:11:01.879Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:11:02.877Z  error: uncaughtException: Hello
+Error: Hello
+    at Timeout._onTimeout (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:135:21)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+2023-06-22T05:12:16.590Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:12:16.590Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:12:17.588Z  error: uncaughtException: Hello
+Error: Hello
+    at Timeout._onTimeout (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:135:21)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+2023-06-22T05:14:46.488Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:14:46.488Z  error: unhandledRejection: OOPS
+Error: OOPS
+    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:39
+    at new Promise (<anonymous>)
+    at loginAuthor (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:142:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2023-06-22T05:14:47.486Z  error: uncaughtException: Hello
+Error: Hello
+    at Timeout._onTimeout (/home/user/BOOTCAMP/DataBase/MONGO/it_info/controllers/author.controller.js:135:21)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)

@@ -1,0 +1,138 @@
+{
+  "level": "\u001b[31merror\u001b[39m",
+  "message": "middlewareError",
+  "meta": {
+    "date": "Thu Jun 22 2023 11:33:52 GMT+0500 (Узбекистан, стандартное время)",
+    "error": {
+      "body": "{\n    \"author_email\":\"shoyi@gmail.uz\"\n    \"author_password\":\"123456\"\n}",
+      "expose": true,
+      "status": 400,
+      "statusCode": 400,
+      "type": "entity.parse.failed"
+    },
+    "exception": true,
+    "level": "error",
+    "message": "uncaughtException: Expected ',' or '}' after property value in JSON at position 42\nSyntaxError: Expected ',' or '}' after property value in JSON at position 42\n    at JSON.parse (<anonymous>)\n    at parse (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/body-parser/lib/types/json.js:89:19)\n    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/body-parser/lib/read.js:128:18\n    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n    at invokeCallback (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js:231:16)\n    at done (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js:220:7)\n    at IncomingMessage.onEnd (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js:280:7)\n    at IncomingMessage.emit (node:events:513:28)\n    at endReadableNT (node:internal/streams/readable:1359:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)",
+    "os": { "loadavg": [0.53, 0.44, 0.57], "uptime": 12430.49 },
+    "process": {
+      "argv": [
+        "/home/user/.nvm/versions/node/v19.9.0/bin/node",
+        "/home/user/BOOTCAMP/DataBase/MONGO/it_info/app.js"
+      ],
+      "cwd": "/home/user/BOOTCAMP/DataBase/MONGO/it_info",
+      "execPath": "/home/user/.nvm/versions/node/v19.9.0/bin/node",
+      "gid": 1000,
+      "memoryUsage": {
+        "arrayBuffers": 36219540,
+        "external": 37404319,
+        "heapTotal": 34529280,
+        "heapUsed": 32210336,
+        "rss": 85794816
+      },
+      "pid": 49922,
+      "uid": 1000,
+      "version": "v19.9.0"
+    },
+    "req": {
+      "headers": {
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "content-length": "70",
+        "content-type": "application/json",
+        "cookie": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OGFiNTA2ODU1YTEyYzE5MDE3NjE5YSIsImlzX2V4cGVydCI6dHJ1ZSwiYXV0aG9yUm9sZXMiOlsiUkVBRCIsIldSSVRFIl0sImlhdCI6MTY4NzQxNDYzNywiZXhwIjoxNjkwMDA2NjM3fQ.oq8J_5YO_Au4iHhXJL2wG6iOdMmwpjjwBQOYL2MBTxs",
+        "host": "localhost:3333",
+        "postman-token": "d8eccbae-ce34-4a96-94a3-b86c7652408f",
+        "user-agent": "PostmanRuntime/7.32.3"
+      },
+      "httpVersion": "1.1",
+      "method": "POST",
+      "originalUrl": "/api/author/login",
+      "query": {},
+      "url": "/api/author/login"
+    },
+    "stack": "SyntaxError: Expected ',' or '}' after property value in JSON at position 42\n    at JSON.parse (<anonymous>)\n    at parse (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/body-parser/lib/types/json.js:89:19)\n    at /home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/body-parser/lib/read.js:128:18\n    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n    at invokeCallback (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js:231:16)\n    at done (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js:220:7)\n    at IncomingMessage.onEnd (/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js:280:7)\n    at IncomingMessage.emit (node:events:513:28)\n    at endReadableNT (node:internal/streams/readable:1359:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)",
+    "trace": [
+      {
+        "column": null,
+        "file": null,
+        "function": "JSON.parse",
+        "line": null,
+        "method": "parse",
+        "native": false
+      },
+      {
+        "column": 19,
+        "file": "/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/body-parser/lib/types/json.js",
+        "function": "parse",
+        "line": 89,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 18,
+        "file": "/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/body-parser/lib/read.js",
+        "function": null,
+        "line": 128,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 9,
+        "file": "node:async_hooks",
+        "function": "AsyncResource.runInAsyncScope",
+        "line": 203,
+        "method": "runInAsyncScope",
+        "native": false
+      },
+      {
+        "column": 16,
+        "file": "/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js",
+        "function": "invokeCallback",
+        "line": 231,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js",
+        "function": "done",
+        "line": 220,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 7,
+        "file": "/home/user/BOOTCAMP/DataBase/MONGO/it_info/node_modules/raw-body/index.js",
+        "function": "IncomingMessage.onEnd",
+        "line": 280,
+        "method": "onEnd",
+        "native": false
+      },
+      {
+        "column": 28,
+        "file": "node:events",
+        "function": "IncomingMessage.emit",
+        "line": 513,
+        "method": "emit",
+        "native": false
+      },
+      {
+        "column": 12,
+        "file": "node:internal/streams/readable",
+        "function": "endReadableNT",
+        "line": 1359,
+        "method": null,
+        "native": false
+      },
+      {
+        "column": 21,
+        "file": "node:internal/process/task_queues",
+        "function": "process.processTicksAndRejections",
+        "line": 82,
+        "method": "processTicksAndRejections",
+        "native": false
+      }
+    ]
+  }
+}

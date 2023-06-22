@@ -8,6 +8,7 @@ const {
   getUserByName,
   loginUser,
   logoutUser,
+  userActivate,
 } = require("../controllers/user.controller");
 
 const Validator = require("../middleware/validator");
@@ -22,5 +23,6 @@ router.delete("/:id", deleteUser);
 router.get("/name/:name", getUserByName);
 router.post("/login", Validator("user_email_pass"), loginUser);
 router.post("/logout", logoutUser);
+router.get("/activate/:link", userActivate);
 
 module.exports = router;

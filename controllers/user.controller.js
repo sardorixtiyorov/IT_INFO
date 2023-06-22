@@ -6,6 +6,8 @@ const { userValidation } = require("../validations/user.validation");
 const bcrypt = require("bcrypt");
 const config = require("config");
 const myJwt = require("../services/JwtService");
+const uuid = require("uuid");
+const mailService = require("../services/MailService");
 
 const createUser = async (req, res) => {
   try {
@@ -27,6 +29,8 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
     const hashedPassword = await bcrypt.hash(user_password, 7);
+    const user_activation_link = uuid.v4();
+
     const newUser = new User({
       user_name,
       user_email,
@@ -34,10 +38,48 @@ const createUser = async (req, res) => {
       user_info,
       user_photo,
       user_is_active,
+      user_activation_link,
     });
-    newUser.save();
+    await newUser.save();
+    await mailService.sendActivationMail(
+      user_email,
+      `${config.get("api_url")}/api/user/activate/${user_activation_link}`
+    );
+    const payload = {
+      id: newUser._id,
+      userRoles: ["READ", "WRITE"],
+      user_is_active: newUser.user_is_active,
+    };
+    const tokens = myJwt.generateTokens(payload);
+    newUser.user_token = tokens.refreshToken;
+    await newUser.save();
+    res.cookie("refreshToken", tokens.refreshToken, {
+      maxAge: config.get("refresh_ms"),
+      httpOnly: true,
+    });
 
-    res.status(201).json({ message: "User added successfully" });
+    res.status(201).json({ ...tokens, user: payload });
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+const userActivate = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      user_activation_link: req.params.link,
+    });
+    if (!user) {
+      return res.status(400).send({ message: "This user not found" });
+    }
+    if (user.user_is_active) {
+      return res.status(400).send({ message: "user already activated" });
+    }
+    user.user_is_active = true;
+    await user.save();
+    res.status(200).send({
+      user_is_active: user.user_is_active,
+      message: "user activated",
+    });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -94,7 +136,7 @@ const getUserByName = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { user_email, user_password } = req.body;
-    const user = await Admin.findOne({ user_email });
+    const user = await User.findOne({ user_email });
     if (!user)
       return res.status(400).send({ message: "Email or password incorrect" });
     const validPassword = await bcrypt.compare(
@@ -127,7 +169,7 @@ const logoutUser = async (req, res) => {
   if (!refreshToken) {
     return res.status(400).send({ message: "No token found" });
   }
-  user = await Admin.findOneAndUpdate(
+  user = await User.findOneAndUpdate(
     { user_token: refreshToken },
     { user_token: "" },
     { new: true }
@@ -227,5 +269,6 @@ module.exports = {
   getUserByName,
   loginUser,
   logoutUser,
-  refreshUserToken
+  refreshUserToken,
+  userActivate,
 };

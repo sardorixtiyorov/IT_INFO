@@ -5,6 +5,8 @@ const { authorValidation } = require("../validations/author.validation");
 // const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const config = require("config");
+const uuid = require("uuid");
+const mailService = require("../services/MailService");
 
 const myJwt = require("../services/JwtService");
 
@@ -40,6 +42,7 @@ const createAuthor = async (req, res) => {
       return res.status(400).json({ message: "Author already exists" });
     }
     const hashedPassword = await bcrypt.hash(author_password, 7);
+    const author_activation_link = uuid.v4();
 
     const newAuthor = new Author({
       author_first_name,
@@ -52,10 +55,50 @@ const createAuthor = async (req, res) => {
       author_position,
       author_photo,
       is_expert,
+      author_activation_link,
     });
-    newAuthor.save();
+    await newAuthor.save();
+    await mailService.sendActivationMail(
+      author_email,
+      `${config.get("api_url")}/api/author/activate/${author_activation_link}`
+    );
+    const payload = {
+      id: newAuthor._id,
+      is_expert: newAuthor.is_expert,
+      authorRoles: ["READ", "WRITE"],
+      author_is_active: newAuthor.author_is_active,
+    };
+    const tokens = myJwt.generateTokens(payload);
+    newAuthor.author_token = tokens.refreshToken;
+    await newAuthor.save();
+    res.cookie("refreshToken", tokens.refreshToken, {
+      maxAge: config.get("refresh_ms"),
+      httpOnly: true,
+    });
 
-    res.status(201).json({ message: "Author added successfully" });
+    res.status(201).json({ ...tokens, author: payload });
+  } catch (error) {
+    errorHandler(res, error);
+  }
+};
+
+const authorActivate = async (req, res) => {
+  try {
+    const author = await Author.findOne({
+      author_activation_link: req.params.link,
+    });
+    if (!author) {
+      return res.status(400).send({ message: "This author not found" });
+    }
+    if (author.author_is_active) {
+      return res.status(400).send({ message: "user already activated" });
+    }
+    author.author_is_active = true;
+    await author.save();
+    res.status(200).send({
+      author_is_active: author.author_is_active,
+      message: "user activated",
+    });
   } catch (error) {
     errorHandler(res, error);
   }
@@ -86,6 +129,17 @@ const loginAuthor = async (req, res) => {
       maxAge: config.get("refresh_ms"),
       httpOnly: true,
     });
+
+    // try {
+    //   setTimeout(function () {
+    //     var error = new Error("Hello");
+    //     throw error;
+    //   }, 1000);
+    // } catch (error) {
+    //   console.log(error);
+    // } //uncaughtException
+
+    // new Promise((_, reject) => reject(new Error("OOPS"))); //unhandledReject
 
     // const token = generateAccessToken(author.id, author.is_expert, [
     //   "READ",
@@ -241,16 +295,18 @@ const updateAuthor = async (req, res) => {
 
 const deleteAuthor = async (req, res) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).send({
-        message: "Invalid  id",
+    const id = req.params.id;
+    if (id !== req.author.id) {
+      return res.status(401).send({
+        message: "You are not authorized to perform this action",
       });
     }
-    const { id } = req.params;
-    const author = await Author.findByIdAndDelete(id);
-    if (!author) {
-      return res.status(404).json({ message: "No author found" });
+    const result = await Author.findOne({ _id: id });
+    if ((result = null)) {
+      return res.status(400).send({ message: "Id is Incorrect" });
     }
+    await Author.findByIdAndDelete(id);
+
     res.status(200).json({ message: "Successfully deleted" });
   } catch (error) {
     errorHandler(res, error);
@@ -266,4 +322,5 @@ module.exports = {
   loginAuthor,
   logoutAuthor,
   refreshAuthorToken,
+  authorActivate,
 };

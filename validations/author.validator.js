@@ -15,6 +15,7 @@ const authorSchema = Joi.object({
   author_position: Joi.string(),
   author_photo: Joi.string().default("/author/avatar.jpg"),
   is_expert: Joi.boolean().default(false),
+  referred: Joi.boolean().default(false),
 });
 
 module.exports = authorSchema;
